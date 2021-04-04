@@ -1,4 +1,4 @@
-#修改TNAME: WR1200JS 中的WR1200JS为你需要编译的型号，注意名称要与configs/templates/目录下的名字相同
+#修改"TNAME: WR1200JS"中的WR1200JS为你需要编译的型号，注意名称要与configs/templates/目录下的名字相同
 name: Build Padavan
 
 on: 
