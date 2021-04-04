@@ -1,5 +1,5 @@
-#修改"TNAME:  MI-MINI"中的MI-MINI为你需要编译的型号，注意名称要与configs/templates/目录下的名字相同
-name: Build Padavan
+#修改"TNAME: MI-MINI"中的MI-MINI为你需要编译的型号，注意名称要与configs/templates/目录下的名字相同
+name: Build MI-MINI
 
 on: 
   release:
@@ -102,5 +102,5 @@ jobs:
       uses: actions/upload-artifact@master
       if: always()
       with:
-        name: Padavan-packages
+        name: Padavan-MI-MINI
         path: /opt/images
