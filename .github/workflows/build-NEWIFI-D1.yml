@@ -73,7 +73,6 @@ jobs:
         echo "CONFIG_FIRMWARE_INCLUDE_SSSERVER=n" >> .config #SS server
         echo "CONFIG_FIRMWARE_INCLUDE_ADBYBY=y" >> .config #adbyby plus+
         echo "CONFIG_FIRMWARE_INCLUDE_ALIDDNS=y" >> .config #阿里DDNS
-        echo "CONFIG_FIRMWARE_INCLUDE_ALIDDNS=y" >> .config #阿里DDNS
         echo "CONFIG_FIRMWARE_INCLUDE_ALDRIVER=y" >> .config #阿里云网盘
         echo "CONFIG_FIRMWARE_INCLUDE_DDNSTO=y" >> .config #内网穿透DDNSTO
         echo "CONFIG_FIRMWARE_INCLUDE_DNSFORWARDER=n" >> .config #DNSFORWARDER
