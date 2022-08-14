@@ -48,6 +48,7 @@ jobs:
         mkdir -p toolchain-3.4.x
         wget $TOOLCHAIN_URL
         tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
+        mkdir -p /opt/images/
     - name: Set busybox's version to compile
       run: |
         cd $WORK_PATH/trunk/user/busybox
