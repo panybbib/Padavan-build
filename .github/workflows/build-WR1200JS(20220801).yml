@@ -1,40 +1,22 @@
-#修改"TARGET_NAME: WR1200JS"中的WR1200JS为需要编译的型号，注意名称要与configs/templates/目录下的名字相同
-name: Build WR1200JS
+#修改"TNAME: WR1200JS"中的WR1200JS为你需要编译的型号，注意名称要与configs/templates/目录下的名字相同
+name: Build WR1200JS 20220801
 
 on: 
-#  release:
-#    types: [published]
-#  push:
-#    tags:
-#    - 'v*'
-#  watch:
-#    types: [started]
-#  branches: 
-#    - master
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'
+  #  branches: 
+  #    - master
 #  schedule:
 #    - cron: 0 8 * * 5
-  workflow_dispatch:
-    inputs:
-      firmwarever:
-        description: 'firmware''s version'
-        required: true
-        default: '20220801'
-      busyboxver:
-        type: choice
-        description: 'busybox''s version'
-        options:
-        - 1.24.x
-        - 1.34.1
-        default: '1.24.x'
-env:
-  TARGET_NAME: WR1200JS
-  REPOSITORY_URL: https://github.com/panybbib/rt-n56u.git
-  TIME_ZONE: Asia/Shanghai
-  WORK_PATH: /opt/rt-n56u
-  FIRMWARE_PATH: /opt/images
+  watch:
+    types: [started]
+
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
@@ -45,64 +27,41 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo apt-get update
-        sudo apt-get -y install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot kmod \
+        sudo apt-get -y install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot \
         cpio git python-docutils gettext automake autopoint texinfo build-essential help2man \
-        pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget libc-dev-bin
-        sudo timedatectl set-timezone "$TIME_ZONE"
+        pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget
     - name: Clone source code
       run: |
-        git clone --depth=1 $REPOSITORY_URL $WORK_PATH
-        cd $WORK_PATH/toolchain-mipsel
+        git clone -b 20220801 --single-branch https://github.com/panybbib/rt-n56u.git /opt/rt-n56u
+        cd /opt/rt-n56u/toolchain-mipsel
         sh dl_toolchain.sh
         mkdir -p /opt/images/
-    - name: Set busybox's version to compile
+    - name: Build Firmware
+      env:
+        TNAME: WR1200JS
       run: |
-        cd $WORK_PATH/trunk/user/busybox
-        sed -i "s/SRC_NAME=busybox.*/SRC_NAME=busybox-${{ github.event.inputs.busyboxver }}/g" ./Makefile
-        cd $WORK_PATH/trunk
-        sed -i "s/busybox_id=.*/busybox_id=\"${{ github.event.inputs.busyboxver }}\"/g" ./build_firmware_modify
-    - name: Custom config
-      run: |
-        cd $WORK_PATH/trunk
-        if [ ! -f configs/templates/$TARGET_NAME.config ] ; then
-        echo "configs/templates/${TARGET_NAME}.config not found"
+        cd /opt/rt-n56u/trunk
+        if [ ! -f configs/templates/$TNAME.config ] ; then
+        echo "configs/templates/$TNAME.config not found "
         exit 1
         fi
-        cp -f configs/templates/$TARGET_NAME.config .config
+        cp -f configs/templates/$TNAME.config .config
         ################################################################################################
         #因不同型号配置功能不一样，所以先把配置项删除，如果你自己要添加其他的，也要写上删除这一条，切记！！！
         ################################################################################################
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER/d' .config #删除配置项SOFTETHERVPN
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT/d' .config #删除配置项SOFTETHERVPN
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CMD/d' .config #删除配置项SOFTETHERVPN   
+        sed -i 's/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=n/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=y/g' .config
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_MENTOHUST/d' .config #删除配置项MENTOHUST
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT/d' .config #删除配置项SCUTCLIENT
         sed -i '/CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS/d' .config #删除配置项SS plus+
         sed -i '/CONFIG_FIRMWARE_INCLUDE_SSSERVER/d' .config #删除配置项SS server
         sed -i '/CONFIG_FIRMWARE_INCLUDE_DNSFORWARDER/d' .config #删除配置项DNSFORWARDER
         sed -i '/CONFIG_FIRMWARE_INCLUDE_ADBYBY/d' .config #删除配置项adbyby plus+
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_FRPC/d' .config #删除配置项FRP Client
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_FRPS/d' .config #删除配置项FRPS Server
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_NPC/d' .config #删除配置项NPC
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_FRPC/d' .config #删除配置项FRPC
+        sed -i '/CONFIG_FIRMWARE_INCLUDE_FRPS/d' .config #删除配置项FRPS
         sed -i '/CONFIG_FIRMWARE_INCLUDE_TUNSAFE/d' .config #删除配置项TUNSAFE
         sed -i '/CONFIG_FIRMWARE_INCLUDE_ALIDDNS/d' .config #删除配置项阿里DDNS
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_ZEROTIER/d' .config #删除配置项ZEROTIER
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_CLOUDFLAREDDNS/d' .config #删除配置项CLOUDFLAREDDNS
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_NVPPROXY/d' .config #删除配置项NVPPROXY
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_DDNSTO/d' .config #删除配置项DDNSTO
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_WIREGUARD/d' .config #删除配置项WIREGUARD
         sed -i '/CONFIG_FIRMWARE_INCLUDE_SMARTDNS/d' .config
         sed -i '/CONFIG_FIRMWARE_INCLUDE_SRELAY/d' .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_KUMASOCKS/d' .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_IPT2SOCKS/d' .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_MICROSOCKS/d' .config
-        #校园网相关开始
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_MENTOHUST/d' .config #删除配置项MENTOHUST
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT/d' .config #删除配置项SCUTCLIENT
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_NAPT66/d' .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT/d' .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_MINIEAP/d' .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_DOGCOM/d' .config
-        #校园网相关结束
-        sed -i 's/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=n/CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE=y/g' .config
         ######################################################################
         #以下选项是定义你需要的功能（y=集成,n=忽略），重新写入到.config文件
         ######################################################################
@@ -139,18 +98,13 @@ jobs:
         #格式如下：
         #sed -i '/自定义项/d' .config
         #echo "自定义项=y" >> .config
-        sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=${{ github.event.inputs.firmwarever }}/g" ./versions.inc
-        echo '更新版本号'
         #########################################################################################
-    - name: Build firmware
-      run: |
-        cd $WORK_PATH/trunk
         sudo ./clear_tree
-        sudo ./build_firmware_modify $TARGET_NAME 0
+        sudo ./build_firmware_modify $TNAME 0
         sudo mv -f images/*.trx /opt/images/
-    - name: Upload packages
+    - name : Upload packages
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success'
+      if: always()
       with:
-        name: Padavan-${TARGET_NAME}
-        path: $FIRMWARE_PATH
+        name: Padavan-WR1200JS
+        path: /opt/images
