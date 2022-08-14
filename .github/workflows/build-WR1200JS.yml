@@ -3,6 +3,8 @@ name: Build WR1200JS
 
 on: 
   workflow_dispatch:
+    watch:                                                      # 监视操作
+    types: [started]                                            # 点击 Star 之后
     inputs:
       firmwarever:
         description: 'firmware''s version'
@@ -18,12 +20,9 @@ on:
 env:
   TARGET_NAME: WR1200JS
   REPOSITORY_URL: https://github.com/vb1980/Padavan-KVR.git
-  TOOLCHAIN_URL: https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
-  WORK_PATH: /opt/rt-n56u
   TIME_ZONE: Asia/Shanghai
-  FIRMWARE_DATEPREFIX: $(date +"%Y%m%d")
-  FIRMWARE_AUTHOR: pany
-  FIRMWARE_PATH: /opt/firmwares
+  WORK_PATH: /opt/rt-n56u
+  FIRMWARE_PATH: /opt/images
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -45,9 +44,7 @@ jobs:
       run: |
         git clone --depth=1 $REPOSITORY_URL $WORK_PATH
         cd $WORK_PATH/toolchain-mipsel
-        mkdir -p toolchain-3.4.x
-        wget $TOOLCHAIN_URL
-        tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
+        sh dl_toolchain.sh
         mkdir -p /opt/images/
     - name: Set busybox's version to compile
       run: |
@@ -133,8 +130,8 @@ jobs:
         #格式如下：
         #sed -i '/自定义项/d' .config
         #echo "自定义项=y" >> .config
-        #sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=${{ github.event.inputs.firmwarever }}/g" ./versions.inc
-        #echo '更新版本号时间'
+        sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=${{ github.event.inputs.firmwarever }}/g" ./versions.inc
+        echo '更新版本号'
         #########################################################################################
     - name: Build firmware
       run: |
@@ -146,5 +143,5 @@ jobs:
       uses: actions/upload-artifact@master
       if: steps.organize.outputs.status == 'success'
       with:
-        name: Padavan-packages
-        path: ${{ env.FIRMWARE }}
+        name: Padavan-${TARGET_NAME}
+        path: $FIRMWARE_PATH
