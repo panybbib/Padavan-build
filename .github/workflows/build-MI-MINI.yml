@@ -150,7 +150,7 @@ jobs:
         sudo mv -f images/*.trx /opt/images/
     - name: Upload packages
       uses: actions/upload-artifact@master
-      if: steps.organize.outputs.status == 'success'
+      if: always()
       with:
         name: Padavan-${TARGET_NAME}
         path: $FIRMWARE_PATH

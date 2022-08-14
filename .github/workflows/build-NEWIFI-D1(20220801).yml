@@ -102,7 +102,7 @@ jobs:
         sudo ./clear_tree
         sudo ./build_firmware_modify $TNAME 0
         sudo mv -f images/*.trx /opt/images/
-    - name : Upload packages
+    - name: Upload packages
       uses: actions/upload-artifact@master
       if: always()
       with:
