@@ -151,5 +151,5 @@ jobs:
       uses: actions/upload-artifact@master
       if: steps.organize.outputs.status == 'success'
       with:
-        name: Padavan-${TARGET_NAME}
-        path: $FIRMWARE_PATH
+        name: "Padavan-${TARGET_NAME}"
+        path: "$FIRMWARE_PATH"
