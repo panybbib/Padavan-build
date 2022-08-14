@@ -15,18 +15,6 @@ on:
         - 1.24.x
         - 1.34.1
         default: '1.24.x'
-      ssp:
-        type: boolean
-        description: 'whether to apply the patch for download ssp bin from local or remote url'
-        default: 'false'
-      uploadwet:
-        type: boolean
-        description: 'whether to upload firmware to wetransfer'
-        default: 'true'
-      pushplus:
-        type: boolean
-        description: 'whether to notify through pushplus'
-        default: 'false'
 env:
   TNAME: NEWIFI-D1
   REPOSITORY_URL: https://github.com/panybbib/rt-n56u.git
@@ -58,11 +46,6 @@ jobs:
         cd /opt/rt-n56u/toolchain-mipsel
         sh dl_toolchain.sh
         mkdir -p /opt/images/
-    - name: Set golang
-      run: |
-        cp -f bashScripts/go.sh $(pwd)
-        sudo chmod 777 ./go.sh
-        bash ./go.sh
     - name: Set busybox's version to compile
       run: |
         cd $WORK_PATH/trunk/user/busybox
