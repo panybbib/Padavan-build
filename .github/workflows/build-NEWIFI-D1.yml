@@ -3,6 +3,8 @@ name: Build NEWIFI-D1
 
 on: 
   workflow_dispatch:
+    watch:                                                      # 监视操作
+    types: [started]                                            # 点击 Star 之后
     inputs:
       firmwarever:
         description: 'firmware''s version'
@@ -130,6 +132,8 @@ jobs:
         #格式如下：
         #sed -i '/自定义项/d' .config
         #echo "自定义项=y" >> .config
+        sed -i "s/FIRMWARE_BUILDS_REV=.*/FIRMWARE_BUILDS_REV=${{ github.event.inputs.firmwarever }}/g" ./versions.inc
+        echo '更新版本号'
         #########################################################################################
     - name: Build firmware
       run: |
