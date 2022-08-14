@@ -17,7 +17,7 @@ on:
         default: '1.24.x'
 env:
   TARGET_NAME: WR1200JS
-  REPOSITORY_URL: https://github.com/panybbib/rt-n56u.git
+  REPOSITORY_URL: https://github.com/vb1980/Padavan-KVR.git
   TOOLCHAIN_URL: https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
   WORK_PATH: /opt/rt-n56u
   TIME_ZONE: Asia/Shanghai
@@ -54,24 +54,6 @@ jobs:
         sed -i "s/SRC_NAME=busybox.*/SRC_NAME=busybox-${{ github.event.inputs.busyboxver }}/g" ./Makefile
         cd $WORK_PATH/trunk
         sed -i "s/busybox_id=.*/busybox_id=\"${{ github.event.inputs.busyboxver }}\"/g" ./build_firmware_modify
-    - name: Recovery SSP bin files download from remote
-      if: github.event.inputs.ssp == 'true'
-      run: |
-        cp -f ssp/shadowsocks.sh $WORK_PATH/trunk/user/shadowsocks/scripts
-        #cp -f ssp/defaults.c $WORK_PATH/trunk/user/shared
-        #cp -f ssp/variables.c $WORK_PATH//trunk/user/httpd
-        cp -f ssp/Shadowsocks.asp $WORK_PATH/trunk/user/www/n56u_ribbon_fixed
-        cd $WORK_PATH/trunk/user/shared
-        #sed -i "s#https://cdn.jsdelivr.net/gh/Padavan_CI/ssp/trojan#https://cdn.jsdelivr.net/gh/${{ github.repository_owner }}/Padavan_CI/ssp/trojan#g" ./defaults.c
-        #sed -i "s#https://cdn.jsdelivr.net/gh/Padavan_CI/ssp/v2ray#https://cdn.jsdelivr.net/gh/${{ github.repository_owner }}/Padavan_CI/ssp/v2ray#g" ./defaults.c
-    - name: Update latest adg
-      run: |
-        cp -f adg/adguardhome.sh $WORK_PATH/trunk/user/adguardhome
-        #cp -f adg/defaults.c $WORK_PATH/trunk/user/shared
-        #cp -f adg/variables.c $WORK_PATH//trunk/user/httpd
-        cp -f adg/Advanced_adguardhome.asp $WORK_PATH/trunk/user/www/n56u_ribbon_fixed
-        #cd $WORK_PATH/trunk/user/adguardhome
-        #sed -i "s#https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome#https://cdn.jsdelivr.net/gh/${{ github.repository_owner }}/Padavan_CI/adg/AdGuardHome#g" ./adguardhome.sh
     - name: Custom config
       run: |
         cd $WORK_PATH/trunk
