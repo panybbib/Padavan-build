@@ -3,8 +3,6 @@ name: Build NEWIFI-D1
 
 on: 
   workflow_dispatch:
-    watch:                                                      # 监视操作
-    types: [started]                                            # 点击 Star 之后
     inputs:
       firmwarever:
         description: 'firmware''s version'
