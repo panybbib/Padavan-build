@@ -17,7 +17,7 @@ on:
         default: '1.24.x'
 env:
   TARGET_NAME: WR1200JS
-  REPOSITORY_URL: https://github.com/vb1980/Padavan-KVR.git
+  REPOSITORY_URL: https://github.com/panybbib/rt-n56u.git
   TIME_ZONE: Asia/Shanghai
   WORK_PATH: /opt/rt-n56u
   FIRMWARE_PATH: /opt/images
