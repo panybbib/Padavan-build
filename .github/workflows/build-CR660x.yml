@@ -152,4 +152,4 @@ jobs:
       if: steps.organize.outputs.status == 'success'
       with:
         name: "Padavan-${TARGET_NAME}"
-        path: "$FIRMWARE_PATH"
+        path: /opt/images
