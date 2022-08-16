@@ -151,5 +151,5 @@ jobs:
       uses: actions/upload-artifact@master
       if: always()
       with:
-        name: "Padavan-${TARGET_NAME}"
+        name: Padavan-CR660x
         path: /opt/images
