@@ -62,7 +62,7 @@ jobs:
         sed -i "s/busybox_id=.*/busybox_id=\"${{ github.event.inputs.busyboxver }}\"/g" ./build_firmware_modify
     - name: Fix etc size and tmp size
       run: |
-        cd /opt/rt-n56u/trunk/user/scripts
+        cd $WORK_PATH/trunk/user/scripts
         sed -i "s#size_etc=\"8M\"#size_etc=\"16M\"#g" ./dev_init.sh
         sed -i "s#size_tmp=\"32M\"#size_tmp=\"48M\"#g" ./dev_init.sh
     - name: Custom config
