@@ -63,12 +63,12 @@ jobs:
         sed -i "s/busybox_id=.*/busybox_id=\"${{ github.event.inputs.busyboxver }}\"/g" ./build_firmware_modify
     - name: Fix etc size and tmp size
       run: |
-        cd /opt/rt-n56u/trunk/user/scripts
+        cd $WORK_PATH/trunk/user/scripts
         sed -i "s#size_etc=\"8M\"#size_etc=\"16M\"#g" ./dev_init.sh
         sed -i "s#size_tmp=\"32M\"#size_tmp=\"40M\"#g" ./dev_init.sh
     - name: Recovery SSP bin files download from remote
       run: |
-        cd /opt/rt-n56u/trunk/user/shared
+        cd $WORK_PATH/trunk/user/shared
         sed -i "s#https://cdn.jsdelivr.net/gh/Padavan_CI/ssp/trojan#https://cdn.jsdelivr.net/gh/Yh793/Padavan-build/ssp/trojan#g" ./defaults.c
         sed -i "s#https://cdn.jsdelivr.net/gh/Padavan_CI/ssp/v2ray#https://cdn.jsdelivr.net/gh/Yh793/Padavan-build/ssp/v2ray#g" ./defaults.c
     - name: Custom config
