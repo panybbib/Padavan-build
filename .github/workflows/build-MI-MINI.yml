@@ -32,14 +32,18 @@ env:
   TIME_ZONE: Asia/Shanghai
   WORK_PATH: /opt/rt-n56u
   FIRMWARE_PATH: /opt/images
+
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    if: github.event.repository.owner.id == github.event.sender.id
-
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@v3
+    - uses: actions/setup-go@v3
+      with:
+          go-version: '1.20'
+          check-latest: true
+
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
