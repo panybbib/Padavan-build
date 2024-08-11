@@ -1,5 +1,5 @@
 #修改"TARGET_NAME: CR660x"中的CR660x为需要编译的型号，注意名称要与configs/templates/目录下的名字相同
-name: Build CR660x
+name: Build CR660x0
 
 on: 
 #  release:
